@@ -1,0 +1,231 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static admin_modify %}
+{% load admin_urls %}
+{% block title %}{{ block.super }}{% endblock %}
+
+{% block extrahead %}{{ block.super }}
+    <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+    {{ media }}
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href='{% static "admin/css/forms-and-widgets.css" %}'/>
+    <link rel="stylesheet" type="text/css" href='{% static "admin/css/change-form.css" %}'/>
+{% endblock %}
+
+{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
+
+{% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form {% for k in request.GET.keys %}{{k}} {% endfor %}{% endblock %}
+
+{% if not is_popup %}
+    {% block breadcrumbs %}
+        <ul class="nav navbar-nav navbar-left breadcrumbs">
+            <li>
+                <a href="{% url 'admin:index' %}">Home</a>
+            </li>
+            {% comment %}
+        <li>
+            <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ app_label|capfirst|escape }}</a>
+        </li>
+        {% endcomment %}
+            <li>
+                {% if has_change_permission %}<a href="{% url opts|admin_urlname:'changelist' %}">
+                    {{ opts.verbose_name_plural|capfirst }}</a>{% else %}
+                    {% comment %}
+                    {{ opts.verbose_name_plural|capfirst }}
+                    L'ADMIN RISULTA NON AVERE CHANGE_PERMISSION, DA FIXARE!!!
+                    {% endcomment %}
+                    <a href="{% url opts|admin_urlname:'changelist' %}">
+                    {{ opts.verbose_name_plural|capfirst }}</a>
+                {% endif %}
+            </li>
+            <li class="active"><span>{% if add %}{% trans 'Add' %} {{ opts.verbose_name }}{% else %}
+                {{ original|truncatewords:"18" }}{% endif %}</span></li>
+        </ul>
+    {% endblock %}
+{% endif %}
+{% block object-tools %}
+    {% if change %}
+        {% if not is_popup %}
+            <ul class="object-tools pull-right">
+                {% block object-tools-items %}
+                    <li>
+                        <a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}"
+                           class="btn btn-info">
+                            {% trans "History" %}
+                        </a>
+                    </li>
+                    {% if has_absolute_url %}
+                        {% comment %}
+                        <li>
+                            <a href="{% url 'admin:view_on_site' content_type_id original.pk %}"
+                               class="btn btn-success viewsitelink">
+                                {% trans "View on site" %}
+                            </a>
+                        </li>
+                        {% endcomment %}
+                    {% endif %}
+                {% endblock %}
+            </ul>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+{% block content_title %}
+{% if 'in' in request.GET.keys %}
+    Carica prodotto
+{% else %} 
+    {% if 'out' in request.GET.keys and 'user' in request.GET.keys %}
+        Vendi prodotto
+    {% elif 'out' in request.GET.keys %}
+        Scarica prodotto
+    {% else %}
+    {{block.super}}
+    {% endif %}
+{% endif %}
+{% endblock%}
+{% block content %}
+   
+            <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post"
+                      id="{{ opts.module_name }}_form" class="form-vertical">{% csrf_token %}{% block form_top %}{% endblock %}
+                <div id="accordion" class="panel-group">
+                <div class="spacer">&nbsp;</div>
+                    
+                {% if is_popup %}<input type="hidden" name="_popup" value="1"/>{% endif %}
+                {% if save_on_top %}{% block submit_buttons_top %}{% submit_row %}{% endblock %}{% endif %}
+                {% if errors %}
+                    <p class="alert alert-danger fade in">
+                        <button data-dismiss="alert" class="close" type="button">×</button>
+                        {% blocktrans count counter=errors|length %}Please correct the error below.{% plural %}Please correct the
+                            errors below.{% endblocktrans %}
+                        {{ adminform.form.non_field_errors }}
+                    </p>
+                {% endif %}
+
+                {% block field_sets %}
+                    {% for fieldset in adminform %}
+                        {% include "admin/includes/fieldset.html" %}
+                    {% endfor %}
+                {% endblock %}
+
+                {% block after_field_sets %}{% endblock %}
+
+                {#        {% block inline_field_sets %}#}
+                {#        {% for inline_admin_formset in inline_admin_formsets %}#}
+                {#            {% include inline_admin_formset.opts.template %}#}
+                {#        {% endfor %}#}
+            {#        {% endblock %}#}
+
+                {% block inline_field_sets %}
+                    {% if inline_admin_formsets %}
+                        {% for inline_admin_formset in inline_admin_formsets %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                    
+                                        <a class="accordion-toggle pull-left" href="#collapse{{ inline_admin_formset.opts.verbose_name_plural|slugify }}"
+                                            data-parent="#accordion" data-toggle="collapse">
+                                            <i class="down glyphicon glyphicon-chevron-down">&nbsp;</i>
+                                            <i class="up glyphicon glyphicon-chevron-up">&nbsp;</i>
+                                            {{ inline_admin_formset.opts.verbose_name_plural }}
+                                        </a>
+                                        
+                                        {% if '/change/' in request.path %}
+                                        <span class="pull-right">
+                                            <span class="text-danger">*</span><small>&nbsp;Campo obbligatorio</small>
+                                        </span>
+                                        {% endif %}
+                                        <span class="clearfix">&nbsp;</span>
+                                    </h4>
+                                </div>
+                                <div id="collapse{{ inline_admin_formset.opts.verbose_name_plural|slugify }}" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        {% include inline_admin_formset.opts.template %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <!--
+                    <div id="inlines" class="no-title">
+                        <ul class="nav nav-tabs">
+                            {% for inline_admin_formset in inline_admin_formsets %}
+                                <li {% if forloop.first %}class="active"{% endif %}>
+                                    <a data-toggle="tab"
+                                       href="#tab-{{ forloop.counter }}">{{ inline_admin_formset.opts.verbose_name_plural }}
+                                        {% with inline_admin_formset.formset.forms|length as len %}
+                                            {% comment %}
+                                                {% if len %}
+                                                    <span class="notification-badge">{{ len }}</span>
+                                                {% endif %}
+                                            {% endcomment %}
+                                        {% endwith %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="tab-content">
+                            {% for inline_admin_formset in inline_admin_formsets %}
+                                <div id="tab-{{ forloop.counter }}"
+                                     class="tab-pane fade {% if forloop.first %}in active{% endif %}">
+                                    {% include inline_admin_formset.opts.template %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    -->
+
+                    {% endif %}
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                {% endblock %}
+
+            {% block after_related_objects %}{% endblock %}
+
+            {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
+
+            {% if adminform.first_field and add %}
+                <script type="text/javascript">document.getElementById("{{ adminform.first_field.id_for_label }}").focus();</script>
+            {% endif %}
+
+            {# JavaScript for prepopulated fields #}
+            {#        {% prepopulated_fields_js %}#}
+            </div>
+            
+        </form>
+{% endblock %}
+{% block js_footer %}
+    
+    <script>
+        $(function() {
+            init_datepicker(".vDateField");
+            init_timepicker(".vTimeField");
+            {% comment %}
+            $color_options = $('#id_color option')
+            $color_options.each(function(){
+                  var color = $(this).attr('value')
+                    $(this).css('background-color', color);
+                  
+                });
+            {% endcomment %}
+        });
+    </script>
+    
+{% endblock js_footer %}

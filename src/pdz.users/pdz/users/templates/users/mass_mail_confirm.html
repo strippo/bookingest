@@ -1,0 +1,45 @@
+{% extends "admin/view.html" %}
+{% block breadcrumbs %}
+{% endblock %}
+{% block object-tools %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <div class="col-lg-3">
+            <div class="well">
+                <ul class="mail-users-list">
+                    {% for user in users %}
+                        <li><span {% if not user.email %}style="text-decoration: line-through;"{% endif %}>{{ user }}</span><br />
+                            {% if user.email %}
+                                <small>({{ user.email }})</small><input type="hidden" name="emails" value="{{ user.email }}">
+                            {% else %}
+                                <small class="text-danger">Indirizzo e-mail sconosciuto.</small>
+                            {% endif %}
+                        </li>
+                        {% if not forloop.last %}
+                            <li class="divider"></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="col-lg-4">
+                <input type="text" class="form-control" name="subject" placeholder="Oggetto">
+            </div>
+            <div class="clearfix">&nbsp;</div>
+            <div class="spacer">&nbsp;</div>
+            <div class="col-lg-8">
+                <textarea rows="10" class="form-control" name="text" placeholder="Testo"></textarea>
+            </div>
+            {% csrf_token %}
+            <div class="clearfix">&nbsp;</div>
+            <div class="spacer">&nbsp;</div>
+            <div class="col-lg-8">
+                <button type="submit" class="btn btn-warning">Invia mail</button>
+                <a class="btn btn-danger" href='{% url "admin:users_user_changelist" %}'>Annulla</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

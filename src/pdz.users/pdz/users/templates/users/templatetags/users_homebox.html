@@ -1,0 +1,13 @@
+{% load admin_urls %}
+<div class="animated flipInY col-md-4">
+    <a href="{% url 'admin:users_user_changelist' %}">
+        <div class="tile-stats">
+            <div class="icon" style="right: 60px !important"><i class="fa fa-user"></i>
+            </div>
+            <div class="count" style="font-size: 26px;">{{users_number}}</div>
+            
+            <h3>Clienti</h3>
+            <h3>&nbsp;</h3>
+        </div>
+    </a>
+</div>

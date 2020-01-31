@@ -1,0 +1,153 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static admin_modify %}
+{% load admin_urls %}
+{% block title %}{{ block.super }}{% endblock %}
+
+{% block extrahead %}{{ block.super }}
+    <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+    {{ media }}
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href='{% static "admin/css/forms-and-widgets.css" %}'/>
+    <link rel="stylesheet" type="text/css" href='{% static "admin/css/change-form.css" %}'/>
+    <link media="print" rel="stylesheet" type="text/css" href='{% static "pdz_admin/css/print.css" %}'/>
+{% endblock %}
+
+
+{% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form {{ request.GET.keys.0 }}{% endblock %}
+
+{% if not is_popup %}
+    {% block breadcrumbs %}
+        <ul class="nav navbar-nav navbar-left breadcrumbs">
+            <li>
+                <a href="{% url 'admin:index' %}">Home</a>
+            </li>
+            <li>
+                <span>Magazzino</span>
+            </li>
+            <li>
+                <a href="{% url 'admin:warehouse_productmovement_changelist' %}">Movimenti Prodotti</a>
+            </li>
+           <li>
+                <span>Report</span>
+            </li>
+        </ul>
+    {% endblock %}
+{% endif %}
+{% block object-tools %}
+{% endblock %}
+{% block content %}
+        <div class="row">
+            <form id="report_parameters" action="" method="GET"
+                  class="form-vertical">
+                <div class="col-sm-4">
+                    <div class="controls">
+                        <label>{{select_label}}</label>
+                        <div class="input-prepend input-group">
+                          <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-user"></i></span>
+                          <select name="model_filters" class="form-control">
+                                    <option value="">Tutti</option>
+                                    {% for model_filter in model_filters %}
+                                        <option{% if model_filter.pk == request.GET.model_filters|add:"0" %}
+                                            selected="selected"{% endif %}
+                                            value="{{ model_filter.pk }}">
+                                            {{ model_filter.surname }} {{ model_filter.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="controls">
+                        <label>Periodo</label>
+                        <div class="input-prepend input-group">
+                          <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                          <input type="text" name="daterange" id="daterange" class="form-control" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="controls">
+                        <label>&nbsp;</label>
+                        <input class="form-control btn btn-success" type="submit" value="Vedi rapporto">
+                    </div>
+                </div>
+            </form>
+        </div>
+{% if header %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="x_panel">
+            <h2 class="x_title">
+                Report <strong style="text-transform: capitalize;">{{model_filter}}</strong> - Periodo: {{ daterange_from }}-{{ daterange_to }} - <strong>Totale: &euro; {{total_report_retribution}}</strong>
+                <span class="pull-right"><span style="font-size: 90%">Firma</span> ___________________</span>
+            </h2>
+            <div class="clearfix"></div>
+            
+            <div class="x_content report" style="padding: 0">
+                <table class="table jambo_table report">
+                    <thead>
+                        <tr>
+                            <th style="width:120px;vertical-align: middle" rowspan="2">Prodotto</th>
+                            {% for header in header %}
+                                <th style="text-align:center" colspan="2">{{header}}</th>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for header in header %}
+                                <th style="text-align: center">Nr.</th>
+                                <th style="text-align: center">&euro;</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in rows %}
+                    <tr class="{{ forloop.counter }}">
+                        {% for item in row %}
+                        <td class="{{ forloop.counter }}" style="width:auto">{{item}}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+        
+        
+    </div>
+    
+</div>
+{% endif %}
+
+{% endblock %}
+{% block js_footer %}
+<script type="text/javascript" src="{% static 'vendors/fixed-table-header/tableHeadFixer.js' %}"></script>
+     <script>
+        $(function() {
+            $('.jambo_table.report').tableHeadFixer({"head" : false, "left" : 1}); 
+            if( typeof ($.fn.daterangepicker) === 'undefined'){ return; }
+            $('#daterange').daterangepicker({
+                {% if daterange_from %}
+                    startDate: '{{ daterange_from }}',
+                    endDate: '{{ daterange_to }}',
+                {% endif %}
+                locale: {
+                format: 'DD/MM/YYYY',
+                monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno', 'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'], // set month names
+                dayNamesShort: ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'],
+                daysOfWeek: ['Do','Lu','Ma','Me','Gio','Ve','Sa'], 
+                applyLabel: 'Applica',
+                cancelLabel: 'Cancella',
+              }
+            }, function(start, end, label) {
+              console.log(start.toISOString(), end.toISOString(), label);
+            });
+        });
+    </script>
+   
+    
+{% endblock js_footer %}

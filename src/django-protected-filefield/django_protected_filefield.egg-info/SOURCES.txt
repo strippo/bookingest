@@ -1,0 +1,15 @@
+setup.cfg
+setup.py
+django_protected_filefield.egg-info/PKG-INFO
+django_protected_filefield.egg-info/SOURCES.txt
+django_protected_filefield.egg-info/dependency_links.txt
+django_protected_filefield.egg-info/entry_points.txt
+django_protected_filefield.egg-info/not-zip-safe
+django_protected_filefield.egg-info/requires.txt
+django_protected_filefield.egg-info/top_level.txt
+protected_filefield/__init__.py
+protected_filefield/fields.py
+protected_filefield/models.py
+protected_filefield/settings.py
+protected_filefield/urls.py
+protected_filefield/views.py

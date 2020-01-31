@@ -1,0 +1,110 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static events_tags %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block content %}
+    <div class="col-lg-2">
+        <div class="panel recent-actions">
+            <div class="panel-heading">
+                <h3 class="panel-title">{% trans 'My Actions' %}</h3>
+            </div>
+            <div>
+                {% if is_app_index %}
+                    <p class="app-name">
+                        {% for app in app_list %}
+                            ({% blocktrans with app.name as name %}{{ name }}{% endblocktrans %})
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                {% if is_app_index %}
+                    {% load bootstrap_template_tags %}
+                    {% get_admin_log_for_app 10 as admin_log for_user user %}
+                {% else %}
+                    {% load log %}
+                    {% get_admin_log 10 as admin_log for_user user %}
+                {% endif %}
+                {% if not admin_log %}
+                    <p>{% trans 'None available' %}</p>
+                {% else %}
+                    <ul class="action-list">
+                    {% for entry in admin_log %}
+                        <li>
+                        {% if entry.is_addition %}
+                            <i class="glyphicon glyphicon-plus green"></i>
+                        {% elif entry.is_change %}
+                            <i class="glyphicon glyphicon-pencil orange"></i>
+                        {% elif entry.is_deletion %}
+                            <i class="glyphicon glyphicon-minus red"></i>
+                        {% endif %}
+
+                        {% if entry.content_type %}
+                            <span class="mini quiet">{% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}</span>
+                        {% else %}
+                            <span class="mini quiet">{% trans 'Unknown content' %}</span>
+                        {% endif %}<br/>
+
+                        {% if entry.is_deletion or not entry.get_admin_url %}
+                            {{ entry.object_repr }}
+                        {% else %}
+                            <a href="{{ admin_root_url }}{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                        {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-10 panel">
+        {% comment %}
+        <div class="tabbable tabs-left">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#lA" data-toggle="tab">Appuntamenti</a></li>
+            <li><a href="#lB" data-toggle="tab">Calls recenti</a></li>
+            <li><a href="#lC" data-toggle="tab">asdasdas</a></li>
+          </ul>
+        {% endcomment %}
+
+         <div class="col-lg-10">
+            {% show_calendar %}
+        </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js_footer %}
+    <script type="text/javascript">
+    (function ($) {
+        swap_containers = function(container){
+            container = $(container);
+            container.remove();
+
+            $('.dashboard-tools').append(container.prop('outerHTML'));
+        }
+
+        swap_if_necessary = function(){
+            width = Math.max( $(window).innerWidth(), window.innerWidth)
+            if(width < '767' && $('.recent-actions').isBefore('.app-list')){
+                swap_containers('.recent-actions');
+            }
+            else if(width > '767' && $('.recent-actions').isAfter('.app-list')){
+                swap_containers('.app-list');
+            }
+        }
+
+        $(window).resize(swap_if_necessary);
+        $(document).ready(swap_if_necessary);
+    })(django.jQuery);
+    </script>
+{% endblock js_footer %}

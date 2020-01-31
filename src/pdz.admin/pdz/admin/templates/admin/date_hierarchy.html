@@ -1,0 +1,44 @@
+{% load i18n %}    
+{% if show %}
+<div class="well well-sm">
+    <ul class="list-unstyled">
+    {% if back %}
+        <li class="date-back">
+            <a href="{{ back.link }}">{% trans 'Torna a' %} {{ back.title }}</a>
+        </li>
+    {% endif %}
+    {% for choice in choices %}
+        <li>
+            {% if choice.link %}
+                <a href="{{ choice.link }}">
+            {% endif %}
+            {{ choice.title }}
+            {% if choice.link %}
+                </a>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% comment %}
+{% if show %}
+<div class="well well-sm">
+    <p>{% trans 'Filtra per data' %}</p>
+    <div align="right">
+     {% if back %}
+           {% if back %}<p><a href="{{ back.link }}">&lsaquo; {{ back.title }}</a></p>{% endif %}
+            {% endif %}
+      <select onChange="javascript:window.location = this.options[this.selectedIndex].value;" style="width: 90%">
+           
+        {% for choice in choices %}
+          <option {% if choice.selected %}selected{% endif %} value="{{ choice.link }}">
+            {{ choice.title }}
+          </option>
+        {% endfor %}           
+      </select>                
+    </div>
+</div>
+{% endif %}
+{% endcomment %}
+

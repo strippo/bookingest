@@ -1,0 +1,145 @@
+<script type="text/javascript">
+    (function ($) {
+        
+        var calendar = {};
+        var helpers = {};
+        helpers.updateEvent = function (event, dayDelta, minuteDelta, resize, revertFunc) {
+            var data = {"pk": event.id,
+                "dayDelta": dayDelta,
+                "minuteDelta": minuteDelta,
+                "resize": resize}
+            $.post("{% url "events.calendar_update_event" %}", data, null).fail(revertFunc);
+        };
+        
+        helpers.dateToString = function (date) {
+            return moment(date).format("YYYYMMDD-HHmmss")
+        };
+
+        helpers.showAddPopup = function (link, startDate, name) {
+            {# chosen calendar date save on localstorage for gotoDate Calendar reload #}
+            var initialDate = {'year': startDate.getUTCFullYear(), 'month': startDate.getUTCMonth(), 'day': startDate.getUTCDate()};
+            localStorage.setItem('calendarInitialDate', JSON.stringify(initialDate));
+            name = "";
+            href = link;
+            if (href.indexOf('?') == -1) {
+                href += '?_popup=1';
+            } else {
+                href += '&_popup=1';
+            }
+            var left = (screen.width/2)-(800/2);
+            var top = (screen.height/2)-(640/2);
+            var win = window.open(href, name, "height=601,width=800,resizable=no,scrollbars=no, left="+left);
+            win.focus();
+            return false;
+        };
+
+        calendar.helpers = helpers;
+        calendar.options =
+        {
+            allDaySlot: false,
+            allDayDefault: false,
+            aspectRatio: 1,
+            axisFormat: "H:mm",
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'agendaDay,agendaWeek,month'
+            },
+            defaultView: "agendaWeek",
+            editable: true,
+            monthNames: ['Gennaio',
+                'Febbraio',
+                'Marzo',
+                'Aprile',
+                'Maggio',
+                'Giugno',
+                'Luglio',
+                'Agosto',
+                'Settembre',
+                'Ottobre',
+                'Novembre',
+                'Dicembre'],
+            monthNamesShort: ['Gen',
+                'Febbraio',
+                'Marzo',
+                'Aprile',
+                'Maggio',
+                'Giugno',
+                'Luglio',
+                'Agosto',
+                'Settembre',
+                'Ottobre',
+                'Novembre',
+                'Dicembre'],
+            dayNames: ['Domenica',
+                'Lunedi',
+                'Martedi',
+                'Mercoledi',
+                'Giovedi',
+                'Venerdi',
+                'Sabato'],
+            dayNamesShort: ['Dom',
+                'Lun',
+                'Mar',
+                'Mer',
+                'Gio',
+                'Ven',
+                'Sab'],
+            weekNumberTitle: 'S',
+            buttonText: {
+                prevYear: '&laquo;',
+                nextYear: '&raquo;',
+                today: 'oggi',
+                month: 'mese',
+                week: 'settimana',
+                day: 'giorno'
+            },
+            columnFormat: {
+                month: 'ddd',
+                week: 'ddd d/M',
+                day: 'dddd d/M'
+            },
+            eventSources: [
+                {
+                    url: '/events/get_events/',
+                    // an option!
+                    textColor: 'black' // an option!
+                }
+            ],
+            eventRender: function (event, element) {
+                element.find('.fc-event-title').html(event.title);
+                var start_str = event.start ? moment(event.start).format("HH:mm") : "";
+                var end_str = event.end ? moment(event.end).format("HH:mm") : "";
+                element.popover({trigger: 'hover',
+                    placement: 'bottom',
+                    title: start_str + " - " + end_str,
+                    html: true,
+                    container: 'body',
+                    content: event.description });
+            },
+            slotMinutes: 15,
+            minTime: 8,
+            maxTime: 20,
+            timeFormat: '',
+            selectable: true,
+            selectUrl: "",
+            selectUrlParams: "",
+            select: function (startDate, endDate, allDay, jsEvent, view) {
+                var url = this.calendar.options.selectUrl +
+                        "?start=" + helpers.dateToString(startDate) +
+                        "&end=" + helpers.dateToString(endDate)
+                        + this.calendar.options.selectUrlParams;
+                helpers.showAddPopup(url, startDate)
+            },
+            eventDrop: function (event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view) {
+                helpers.updateEvent(event, dayDelta, minuteDelta, false, revertFunc);
+                $('div.popover.in').hide();
+
+            },
+            eventResize: function (event, dayDelta, minuteDelta, revertFunc, jsEvent, ui, view) {
+                helpers.updateEvent(event, dayDelta, minuteDelta, true, revertFunc)
+            }
+        };
+        window.calendar = calendar;
+    })(jQuery);
+</script>

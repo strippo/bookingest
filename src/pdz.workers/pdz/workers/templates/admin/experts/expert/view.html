@@ -1,0 +1,27 @@
+{% extends "admin/view.html" %}
+{% block content %}
+    {{ block.super }}
+    <h1 class="agenda-title">Agenda</h1>
+    <div id="calendar-expert" class="x_panel">
+    </div>
+{% endblock %}
+
+    {% block js_footer %}
+        <script type="text/javascript">
+            (function ($) {
+                var options = calendar.options;
+                options.selectUrl = "{% url "admin:experts_expertavailability_add" %}";
+                options.selectUrlParams = "&expert=" + {{ original.pk }};
+                options.eventSources = [
+            {
+                url: '{% url "admin:experts_expert_events" pk=original.pk %}',
+                // an option!
+                textColor: 'black' // an option!
+            }
+        ]
+
+
+                $("#calendar-expert").fullCalendar(options);
+            })(jQuery)
+        </script>
+{% endblock %}

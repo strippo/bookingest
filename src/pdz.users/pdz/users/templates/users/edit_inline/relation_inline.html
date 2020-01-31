@@ -1,0 +1,14 @@
+<script type="text/javascript">
+    function after_relation_add() {
+        window.location.reload();
+    }
+</script>
+<div class="text-center inline-add">
+    <a id="add_relation" class="btn btn-primary btn-xs"
+       onclick="return showAddAnotherPopup(this);"
+       href="{% url "admin:relations_relation_add" %}?users={{ original.pk }}">Aggiungi {{ inline_admin_formset.opts.verbose_name }}
+    </a>
+    <span id="relation_to"></span>
+</div>
+
+{% include "admin/edit_inline/tabular.html" %}

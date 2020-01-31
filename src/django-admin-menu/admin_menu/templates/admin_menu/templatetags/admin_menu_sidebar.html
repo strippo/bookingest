@@ -1,0 +1,82 @@
+{% load i18n admin_static admin_urls bootstrap_template_tags %}
+{% if app_list %}
+<ul class="nav side-menu">
+    <li>
+        <a href="/">
+            <i class="fa fa-home"></i> HOME
+        </a>
+    <li>
+    <li>
+        <a>
+            <i class="fa fa-cog"></i>
+            <span style="text-transform: uppercase">Azioni rapide</span>
+            <span class="fa fa-chevron-down"></span>
+        </a>
+        <!--<ul class="nav child_menu ">-->
+        <!--<li class="current-page">-->
+        <!--{{ request.path }}-->
+        <!--<a href="{% url 'admin:workers_operator_changelist' %}report"> Report Operatrici</a>-->
+        <!--</li>-->
+        <!--<li>-->
+        <!--<a href="{% url 'admin:warehouse_productmovement_add' %}?out"> Scarica prodotti</a>-->
+        <!--</li>-->
+        <!--<li>-->
+        <!--<a href="{% url 'admin:warehouse_productmovement_add' %}?in"> Carica prodotti</a>-->
+        <!--</li>-->
+        <!--<li>-->
+        <!--<a href="{% url 'admin:warehouse_product_changelist' %}?status=2"> Prodotti in esaurimento</a>-->
+        <!--</li>                <li>-->
+        <!--<a href="{% url 'admin:users_user_add' %}"> Aggiungi Cliente</a>-->
+        <!--</li>-->
+        <!---->
+        <!--</ul>-->
+        <ul class="nav child_menu ">
+            {% for action in action_list %}
+            <li
+            {% if request.path == action.url %} class="current-page"{% endif %}>
+
+            <a href="{{action.url}}"> {{action.name}}</a>
+            </li>
+            {% endfor %}
+
+        </ul>
+    </li>
+    <li>
+        <a>
+            <i class="fa fa-file"></i>
+            <span style="text-transform: uppercase">Reports</span>
+            <span class="fa fa-chevron-down"></span>
+        </a>
+        <ul class="nav child_menu ">
+            {% for report in report_list %}
+            <li
+            {% if request.path == report.url %} class="current-page"{% endif %}>
+
+            <a href="{{report.url}}"> {{report.name}}</a>
+            </li>
+            {% endfor %}
+
+        </ul>
+    </li>
+    {% for app in app_list %}
+    <li>
+        <a>
+            {% blocktrans with name=app.name|lower %}
+            <i class="fa fa-{{name}}"></i>
+            <span style="text-transform: uppercase">{{ name }}</span>
+            <span class="fa fa-chevron-down"></span>
+            {% endblocktrans %}
+        </a>
+
+        <ul class="nav child_menu {{ app.name|lower|slugify }}">
+            {% for model in app.models %}
+            <li>
+                <a href="{{ model.admin_url }}">{{ model.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+

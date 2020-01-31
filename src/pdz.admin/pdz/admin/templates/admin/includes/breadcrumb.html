@@ -1,0 +1,11 @@
+{%  load admin_urls i18n %}
+<ul class="nav navbar-nav navbar-left breadcrumbs">
+    <li>
+        <a href="{% url 'admin:index' %}">Home</a>
+    </li>
+    <li class="text-info">
+        <span>{{ admin_app_label|capfirst|escape }}</span>
+    </li>
+    <li class="active"><span>{{ cl.opts.verbose_name_plural|capfirst }}</span></li>
+</ul>
+

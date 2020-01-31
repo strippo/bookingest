@@ -1,0 +1,63 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_static admin_modify admin_urls %}
+
+{% block object-tools %}
+      {% if not is_popup %}
+          <ul class="object-tools pull-right">
+            {% block object-tools-items %}
+              {% for label, url, css_cls in tools_items %}
+                <li><a class="btn {{ css_cls|default:"btn-success" }}" href="{{ url }}">
+                    {{ label|safe }}</a></li>
+          {% endfor %}
+{#            <li>#}
+{#                <a href="{% url opts|admin_urlname:'change' original.pk|admin_urlquote %}" class="btn btn-danger">#}
+{#                    {% trans "Modifica" %}#}
+{#                </a>#}
+{#            </li>#}
+{#                <li>#}
+{#                    <a href="{% url opts|admin_urlname:'delete' original.pk|admin_urlquote %}" class="btn btn-danger">#}
+{#                        {% trans "Elimina" %}#}
+{#                    </a>#}
+{#                </li>#}
+{#            <li>#}
+{#                <a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="btn btn-success">#}
+{#                    {% trans "History" %}#}
+{#                </a>#}
+{#            </li>#}
+            {% endblock %}
+
+          </ul>
+        {% endif %}
+{% endblock %}
+{% comment %}
+                {% block inline_field_sets %}
+                    <div class="spacer">&nbsp;</div>
+                    <div id="inlines" class="no-title">
+                        <ul class="nav nav-tabs">
+                        {% for inline_admin_formset in inline_admin_formsets %}
+                            <li {% if forloop.first %}class="active"{% endif %}>
+                                <a data-toggle="tab" href="#tab-{{ forloop.counter }}">{{ inline_admin_formset.opts.verbose_name_plural }}
+                                    {% with inline_admin_formset.formset.forms|length as len %}
+
+                                            {% if len %}
+                                                <span class="notification-badge">{{ len }}</span>
+                                            {% endif %}
+
+                                    {% endwith %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                        <div class="tab-content">
+                        {% for inline_admin_formset in inline_admin_formsets %}
+                            <div id="tab-{{ forloop.counter }}" class="tab-pane fade {% if forloop.first %}in active{% endif %}">
+                                {% include inline_admin_formset.opts.template %}
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endblock %}
+{% endcomment %}
+
+
+{% block submit_buttons_bottom %}{% endblock %}

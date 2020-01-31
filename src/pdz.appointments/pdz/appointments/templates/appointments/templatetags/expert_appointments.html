@@ -1,0 +1,54 @@
+<div class="well">
+    <h4>Appuntamenti programmati</h4>
+    <table class="table">
+        <thead>
+            <th>Appuntamento (data - ora)</th>
+            <th>Utente/i</th>
+            <th>Percorso</th>
+        </thead>
+        <tbody>
+            {% for appointment in old_appointments %}
+                <tr class="old">
+                    <td>{{ appointment }}</td>
+                    <td>
+                        {% for user in appointment.users.all %}
+                            {{ user }}{% if not forloop.last %}<br>{% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if appointment.supportpath %}
+                            {{ appointment.supportpath }}
+                        {% else %}
+                            --
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment }}</td>
+                    <td>
+                        {% for user in appointment.users.all %}
+                            {% if appointment.supportpath %}
+                                <a href="{{ user.get_absolute_url }}">{{ user }}</a>{% if not forloop.last %}<br>{% endif %}
+                            {% else %}
+                                {{ user }}{% if not forloop.last %}<br>{% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if appointment.supportpath %}
+                            <a href="{{ appointment.supportpath.get_absolute_url }}">{{ appointment.supportpath }}</a>
+                        {% else %}
+                            --
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">Non sono presenti appuntamenti.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

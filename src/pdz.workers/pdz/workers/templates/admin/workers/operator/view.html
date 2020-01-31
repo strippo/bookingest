@@ -1,0 +1,28 @@
+{% extends "admin/view.html" %}
+{% block content %}
+    {{ block.super }}
+    <!--<div id="calendar-expert" class="x_panel">-->
+    <!--</div>-->
+{% endblock %}
+
+    {% block js_footer %}
+{% comment %}
+        <!--<script type="text/javascript">-->
+            <!--(function ($) {-->
+                <!--var options = calendar.options;-->
+                <!--options.selectUrl = "{% url "admin:workers" %}";-->
+                <!--options.selectUrlParams = "&expert=" + {{ original.pk }};-->
+                <!--options.eventSources = [-->
+            <!--{-->
+                <!--url: '{% url "admin:experts_expert_events" pk=original.pk %}',-->
+                <!--// an option!-->
+                <!--textColor: 'black' // an option!-->
+            <!--}-->
+        <!--]-->
+
+
+                <!--$("#calendar-expert").fullCalendar(options);-->
+            <!--})(jQuery)-->
+        <!--</script>-->
+{% endcomment %}
+{% endblock %}

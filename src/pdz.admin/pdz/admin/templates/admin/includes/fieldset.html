@@ -1,0 +1,71 @@
+{% load bootstrap_template_tags admin_filters %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+        {% if fieldset.name %}
+                <a class="accordion-toggle pull-left" href="#collapse{{ fieldset.name|slugify }}"
+                    data-parent="#accordion" data-toggle="collapse">
+                    <i class="down glyphicon glyphicon-chevron-down">&nbsp;</i>
+                    <i class="up glyphicon glyphicon-chevron-up">&nbsp;</i>
+                    {{ fieldset.name }}
+                </a>
+            {% else%}
+            <p class=" pull-left">
+                &nbsp
+            </p>
+            {% endif %}
+            {% if '/change/' in request.path or '/add/' in request.path %}
+            <span class="pull-right">
+                <span class="text-danger">*</span><small>&nbsp;Campo obbligatorio</small>
+            </span>
+            {% endif %}
+            <span class="clearfix">&nbsp;</span>
+        </h4>
+    </div>
+    <div {% if fieldset.name %}id="collapse{{ fieldset.name|slugify }}"{% endif %} class="panel-collapse{% if fieldset.name %} collapse{% endif %} {{ fieldset.classes }}">
+        <div class="panel-body">
+            <fieldset class="module aligned {{ fieldset.classes }}">
+                {% if fieldset.description %}
+                    <div class="description">{{ fieldset.description|safe }}</div>
+                {% endif %}
+                {% for line in fieldset %}
+                    <div class="form-inline{% if line.fields|length_is:'1' and line.errors %} errors{% endif %}{% for field in line %}{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% endfor %}">
+                        {% if line.fields|length_is:'1' %}
+                        
+                        {{ line.errors }}{% endif %}
+                        {% for field in line %}
+                            <div class="form-group {% if field.field.field.required  %}has-warning{% endif %} field-box{% if field.field.name %} field-{{ field.field.name }}{% if not field.is_readonly and field.errors %} errors{% endif %}"{% endif %}>
+                                {% if not line.fields|length_is:'1' and not field.is_readonly %}
+                                    {% for error in field.field.errors %}
+                                        <p class="alert alert-danger">{{ error }}</p>
+                                    {% endfor %}
+                                {% endif %}
+                                    <label for="{{ field.field.label }}">
+                                    {{ field.field.label }}
+                                    </label>
+                                    {% if field.is_readonly %}
+                                        <p>{{ field.contents|linebreaksbr|default:'--' }}</p>
+                                    {% else %}
+                                    {% if field.field.widget.attrs.format  %}
+                                        <h1>{{ field.field.widget.attrs.format }}</h1>
+                                    {% endif %}
+                                        {% if field.is_checkbox %}
+                                            {{ field.field|append_attr:"class: top-shift" }}
+                                        {% else %}
+                                            {{ field.field|append_attr:"class: form-control" }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% if field.field.help_text %}
+                                    <p class="help">{{ field.field.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        <div class="clearfix"></div>
+                    </div>
+                {% endfor %}
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+

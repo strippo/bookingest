@@ -1,0 +1,109 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+{% load url from future %}
+
+{% block css_commons %}{% endblock css_commons %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/login.css' %}"/>
+{% endblock %}
+
+{% block bodyclass %}login{% endblock %}
+
+{% block branding %}{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block top-nav %}{% endblock %}
+
+{% block page-content %}
+
+      <div class="login_wrapper">
+        <div class="animate form login_form">
+          <section class="login_content">
+            <form id="login-form" action="{{ app_path }}" method="post">
+                {% csrf_token %}
+              <h1>Accedi</h1>
+                {% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
+                    <p class="errornote alert alert-error fade in">
+                        <button data-dismiss="alert" class="close" type="button">×</button>
+                        Controlla gli errori.
+                    </p>
+                {% endif %}
+                {% if form.non_field_errors or form.this_is_the_login_form.errors %}
+                    {% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
+                        <p class="errornote alert alert-error fade in">
+                            <a href="#" data-dismiss="alert" class="close">×</a>
+                            {{ error }}
+                        </p>
+                    {% endfor %}
+                {% endif %}
+              <div>
+                <input type="text" placeholder="{{ form.username.label }}"
+                       class="form-control" name="{{ form.username.html_name }}"
+                       id="{{ form.username.html_name }}"
+                       value="{% firstof form.username.value '' %}">
+              </div>
+              <div>
+                <input type="password" placeholder="{% trans 'Password' %}"
+                       class="form-control" name="{{ form.password.html_name }}"
+                       id="{{ form.password.html_name }}" value="">
+              </div>
+                <input type="hidden" name="this_is_the_login_form" value="1"/>
+                <input type="hidden" name="next" value="{{ next }}"/>
+              <div>
+                <button type="submit" class="btn btn-default submit">Log in</button>
+              </div>
+              <div class="clearfix"></div>
+              <div class="separator">
+                <div>
+                  <h1><i class="glyphicon glyphicon-fire"></i> Pan di zucchero</h1>
+                  <p>©{% now "Y" %} All Rights Reserved. Powered by <a href="http://www.y2informatica.it">Y2 Informatica s.n.c.</a></p>
+                </div>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+{% endblock %}
+{% block footer %}{% endblock %}
+{% block js_footer %}
+        <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function(){
+                {% if not form.this_is_the_login_form.errors %}
+                    {% if form.username.errors %}
+                        user = $("#username");
+                        user.popover({
+                            'html': true,
+                            'placement' : 'top',
+                            'title' : '<i class="glyphicon glyphicon-user text-danger"></i> {{ form.username.label }}',
+                            'content' : '{{ form.username.errors }}',
+                            'trigger': 'click'
+                        }).keydown(function(){user.popover('hide');});
+                        $("#username").trigger('click');
+                    {% endif %}
+                    {% if form.password.errors %}
+                        pass = $("#password");
+                        pass.popover({
+                            'html': true,
+                            'placement' : 'bottom',
+                            'title' : '<i class="glyphicon glyphicon-lock text-danger"></i> {% trans 'Password' %}',
+                            'content' : '{{ form.password.errors }}',
+                            'trigger': 'click'
+                        }).keydown(function(){pass.popover('hide');});
+                        $("#password").trigger('click');
+                    {% endif %}
+                    {% if not form.username.errors and not form.password.errors %}
+                        $('#username').focus();
+                    {% endif %}
+                {% endif %}
+            });
+        })(django.jQuery);
+        </script>
+{% endblock js_footer %}

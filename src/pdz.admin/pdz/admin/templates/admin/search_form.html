@@ -1,0 +1,33 @@
+{% load i18n admin_static %}
+{% if cl.search_fields %}
+<div id="toolbar">
+    <form id="changelist-search" action="" method="get" class="form-inline">
+        {% if show_result_count %}
+                    <div class="alert alert-success form-search-success">
+                        {% blocktrans count counter=cl.result_count %}{{ counter }} result{% plural %}{{ counter }} results{% endblocktrans %} 
+                        (<a class="alert-link" href="?{% if cl.is_popup %}pop=1{% endif %}">
+                        {% blocktrans with full_result_count=cl.full_result_count %}{{ full_result_count }} total{% endblocktrans %}
+                        </a>)
+                    </div>
+                {% endif %}
+            <div class="input-group">
+                
+                {% for pair in cl.params.items %}
+                    {% ifnotequal pair.0 search_var %}<input type="hidden" name="{{ pair.0 }}" value="{{ pair.1 }}"/>{% endifnotequal %}
+                {% endfor %}
+                <label for="searchbar">
+                    {% comment %}
+                    <img src="{% static "admin/img/icon_searchbox.png" %}" alt="Search" />
+                    {% endcomment %}
+                    
+                    {% comment %}<i class="glyphicon glyphicon-search"></i>{% endcomment %}
+                </label>
+                <input style="width:300px;" type="text" placeholder="{% trans 'Search' %} {{ cl.opts.verbose_name|capfirst }}" name="{{ search_var }}" value="{{ cl.query }}" id="searchbar" class="form-control input-sm" />
+                <span class="input-group-btn">
+                <button class="btn btn-primary btn-sm" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                </span>
+            </div>
+    </form>
+</div>
+<script type="text/javascript">document.getElementById("searchbar").focus();</script>
+{% endif %}

@@ -1,0 +1,75 @@
+{% load i18n admin_static admin_urls bootstrap_template_tags %}
+<div class="navbar navbar-default navbar-fixed-top admin_main_menu">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+{#        <a class="navbar-brand" href="{% url "admin:index" %}"><span class="glyphicon glyphicon-home"></span></a>#}
+        <a title="Home" class="navbar-brand" href="{% url "admin:index" %}"><img src="{% static "pdz_admin/img/logo_ucipem.png" %}" /></a>
+    </div>
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+        {% if app_list %}
+            <ul role="navigation" class="nav navbar-nav">
+                {% for app in app_list %}
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" href="#">
+                            {% blocktrans with name=app.name %}{{ name }}{% endblocktrans %}
+                            <b class="caret"></b></a>
+                        <ul class="dropdown-menu {{ app.name|lower|slugify }}" role="menu">
+                            {% for model in app.models %}
+                                <li role="presentation">
+                                    <span>
+                                        <a tabindex="-1" role="menuitem" href="{{ model.admin_url }}">{{ model.name }}</a>
+                                        {% if model.add_url %}
+                                            <a href="{{ model.add_url }}" class="glyphicon glyphicon-plus pull-right"></a>
+                                        {% endif %}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <ul class="nav navbar-nav navbar-right">
+            <li><p class="navbar-text"><i class="glyphicon glyphicon-user icon-white"></i>
+                {% trans 'Welcome,' %}
+                {#                <strong>#}
+                {#                    {% filter force_escape %}{% firstof user.get_short_name user.get_username %}{% endfilter %}</strong>.#}
+            </p></li>
+            <li>
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                    <strong>{% filter force_escape %}
+                                     {% firstof user.get_short_name|lower user.get_username|lower %}{% endfilter %}</strong>
+                    <span
+                            class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    {% url 'django-admindocs-docroot' as docsroot %}
+                    {% if docsroot %}
+                        <li>
+                            <a href="{{ docsroot }}"><i class="icon-pencil"></i> {% trans 'Documentation' %}</a>
+                        </li>
+                    {% endif %}
+                    {% if user.has_usable_password %}
+                        <li>
+                            <a href="{% url 'admin:password_change' %}">
+                                <i class="glyphicon glyphicon-pencil text-warning"></i>
+                                {% trans 'Change password' %}
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <a href="{% url 'admin:logout' %}">
+                            <i class="glyphicon glyphicon-off text-danger"></i>
+                            {% trans 'Log out' %}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+    </div>
+</div>

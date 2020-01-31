@@ -1,0 +1,35 @@
+{% load admin_urls %}
+<div class="animated flipInY col-md-4">
+    
+        <div class="tile-stats product-homebox">
+            <div class="icon" style="right: 60px !important">
+                {% if products_to_recharge == 0 and products_over == 0 %}
+                    <i class="text-success fa fa-check"></i>
+                {% else %}
+                    <i class="text-danger fa fa-warning"></i>
+                {% endif %}
+            </div>
+            <div class="count" style="font-size:26px !important">Stato magazzino</div>
+            
+            <p style="font-size: 16px;">
+                <a href="{% url 'admin:warehouse_product_changelist' %}">
+                    {{products_available}} articoli disponibili
+                </a>
+            </p>
+            {% if products_to_recharge != 0 %}
+            <p style="font-size: 16px;font-weight: bold">
+                <a href="{% url 'admin:warehouse_product_changelist' %}?status=2">
+                    <span class="text-warning">{{ products_to_recharge }} articoli in esaurimento</span>
+                </a>
+            </p>
+            {% endif %}
+            {% if products_over != 0 %}
+            <p style="font-size: 16px;font-weight: bold">
+                <a href="{% url 'admin:warehouse_product_changelist' %}?status=3">
+                    <span class="text-danger">{{ products_over }} articoli esauriti</span>
+                </a>
+            </p>
+            {% endif %}
+        </div>
+
+</div>

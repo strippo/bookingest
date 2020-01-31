@@ -1,0 +1,56 @@
+{% load i18n admin_filters %}
+
+<div class="actions pull-left">
+<p class="label label-info info-counter">
+    {{ cl.result_count }}
+    {% ifequal cl.result_count 1 %}
+      {{ cl.opts.verbose_name }}
+    {% else %}
+      {{ cl.opts.verbose_name_plural }}
+    {% endifequal %}
+    {% if show_all_url %}
+      &nbsp;&nbsp;
+      <a href="{{ show_all_url }}" class="showall">
+          {% trans 'Show all' %}
+      </a>
+    {% endif %}
+
+    {% if actions_selection_counter %}
+        <script type="text/javascript">var _actions_icnt="{{ cl.result_list|length|default:"0" }}";</script>
+        <span class="action-counter label label-info">{{ selection_note }}</span>
+        {% if cl.result_count != cl.result_list|length %}
+        <span class="all label label-info">{{ selection_note_all }}</span>
+        <span class="question">
+            <a href="javascript:;" class="btn btn-danger btn-xs" title="{% trans "Click here to select the objects across all pages" %}">{% blocktrans with cl.result_count as total_count %}Select all {{ total_count }} {{ module_name }}{% endblocktrans %}</a>
+        </span>
+        <span class="clear">
+            <a href="javascript:;" class="btn btn-danger btn-xs">{% trans "Clear selection" %}</a>
+        </span>
+        {% endif %}
+    {% endif %}
+    {% if cl.formset and cl.result_count %}
+        <input type="submit" name="_save" class="btn btn-inverse" value="{% trans 'Save' %}"/>
+    {% endif %}
+    </p>
+</div>
+
+<div class="admin-actions-select pull-right">
+    <div class="input-append input-group">
+        {% for field in action_form %}
+            {% if field.label %}
+                {% if field.label == 'Azione:' %}
+                
+                {% else %}
+                    <label>{{ field.label }}</label>
+                {% endif %}
+                
+            {% endif %}
+                {{ field|append_attr:"class:form-control input-sm"}}
+        {% endfor %}
+        <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary btn-sm" title="{% trans "Run the selected action" %}" name="index" value="{{ action_index|default:0 }}"><i class="glyphicon glyphicon-circle-arrow-right"></i></button>
+        </span>
+    </div>
+</div>
+<div class="clearfix"></div>
+

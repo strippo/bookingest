@@ -1,0 +1,12 @@
+setup.cfg
+setup.py
+admin_menu/__init__.py
+admin_menu/templatetags/__init__.py
+admin_menu/templatetags/admin_menu_tags.py
+django_admin_menu.egg-info/PKG-INFO
+django_admin_menu.egg-info/SOURCES.txt
+django_admin_menu.egg-info/dependency_links.txt
+django_admin_menu.egg-info/entry_points.txt
+django_admin_menu.egg-info/not-zip-safe
+django_admin_menu.egg-info/requires.txt
+django_admin_menu.egg-info/top_level.txt

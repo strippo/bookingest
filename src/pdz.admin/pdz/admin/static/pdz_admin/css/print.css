@@ -1,0 +1,15 @@
+.top_nav .nav_menu, .page-title, form#report_parameters, footer, .tile_count, .left_col {
+    display: none !important;
+}
+.x_content.report {
+    overflow: visible;
+}
+.right_col {
+    min-height: 0 !important;
+}
+.x_panel {
+    margin-bottom:0;
+}
+.nav-md .container.body .right_col {
+    margin-left: 0;
+}

@@ -1,0 +1,48 @@
+<div class="calendar-outer x_panel">
+    <!--<p class="legend">-->
+        <!--<span class="green">&nbsp;</span>&nbsp;Stanza 1&nbsp;&nbsp;-->
+        <!--<span class="red">&nbsp;</span>&nbsp;Stanza 2&nbsp;&nbsp;-->
+        <!--<span class="blue">&nbsp;</span>&nbsp;Stanza 3&nbsp;&nbsp;-->
+        <!--<span class="orange">&nbsp;</span>&nbsp;Stanza 4&nbsp;&nbsp;-->
+        <!--<span class="yellow">&nbsp;</span>&nbsp;Stanza 5&nbsp;&nbsp;-->
+        <!--<span class="light-blue">&nbsp;</span>&nbsp;Stanza 6&nbsp;&nbsp;-->
+        <!--<span class="fuchsia">&nbsp;</span>&nbsp;Stanza 7&nbsp;&nbsp;-->
+        <!--<span class="white">&nbsp;</span>&nbsp;Stanza 8&nbsp;&nbsp;-->
+        <!--<span class="light-green">&nbsp;</span>&nbsp;Segreteria</p>-->
+    <div class="x_title">
+        <h2><i class="fa fa-calendar"></i>&nbsp;Calendario</h2>
+        <ul class="nav navbar-right panel_toolbox">
+          <li style="float: right !important"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+          </li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+        <div id='calendar'>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        var options = calendar.options;
+        options.selectUrl = "{%  url "admin:appointments_appointment_add" %}";
+        options.eventSources = [
+            {
+                url: "{% url 'events.calendar_get_events' %}",
+                // an option!
+                textColor: 'black' // an option!
+            }
+        ];
+        
+        $('#calendar').fullCalendar(options);
+{#        localstorage per ultima data cliccata (refresh su settimana in lavorazione)#}
+        if (localStorage.getItem('calendarInitialDate') != null) {
+            var initialDate = JSON.parse(localStorage.getItem('calendarInitialDate'));
+            $('#calendar').fullCalendar('gotoDate', initialDate.year, initialDate.month, initialDate.day)
+             localStorage.removeItem('calendarInitialDate');
+        }
+    });
+
+</script>

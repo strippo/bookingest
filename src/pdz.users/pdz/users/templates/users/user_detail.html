@@ -1,0 +1,138 @@
+{% load admin_static i18n %}
+<style type="text/css">
+    @page {
+        size: auto;   /* auto is the initial value */
+        margin: 10mm;  /* this affects the margin in the printer settings */
+    }
+
+    body {
+        background-color: #ffffff;
+        font-size:14px;
+        margin: 0px; /* this affects the margin on the content before sending to printer */
+    }
+    h1 {
+        color: #999999;
+        font-size: 20px;
+        font-weight:normal;
+        text-align: center;
+    }
+    .panel {
+        margin-bottom: 20px;
+        background-color: #ffffff;
+    }
+    .pull_left {
+        float: left;
+    }
+    .pull_right {
+        float: right;
+    }
+    .table {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    table {
+        max-width: 100%;
+        background-color: transparent;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    th,
+    td  {
+        padding: 5px 4px 2px 4px;
+        vertical-align: middle;
+    }
+
+    .clearfix {
+        clear: both;
+    }
+    .authorize  {
+        font-weight:bold;
+        text-align: center;
+        font-size:12px;
+    }
+    .footer {
+        margin: 0 100px;
+    }
+</style>
+<div class="container panel panel-default checking_card">
+    <table class="header">
+            <tr>
+                <td>
+                    <img class="pull-left" src='{% static "pdz_admin/img/logo_ucipem.png" %}'/>
+                </td>
+                <td>
+                    <h1>Scheda utente</h1>
+                </td>
+                <td align="right">
+                    <strong>N° caso: {{ user.code }}</strong>
+                </td>
+            </tr>
+        </table>
+
+
+    <table class="table username">
+        <tr>
+            <td><strong>Cognome:</strong></td>
+            <td>{{ object.surname|default:"--" }}</td>
+            <td><strong>Nome:</strong></td>
+            <td colspan="3">{{ object.name|default:"--" }}</td>
+        </tr>
+        <tr>
+            <td><strong>Data di nascita:</strong></td>
+            <td>{{ object.birth_date|date:"d/m/Y"|default:"--" }}</td>
+            <td colspan="2"><strong>Luogo di nascita:</strong></td>
+            <td colspan="2">{{ object.birth_place|default:"--" }}</td>
+        </tr>
+        <tr>
+            <td><strong>Istruzione:</strong></td>
+            <td>{{ object.school_ranking|default:"--" }}</td>
+            <td><strong>Professione:</strong></td>
+            <td>{{ object.job|default:"--" }}</td>
+            <td><strong>Stato civile:</strong></td>
+            <td>{{ object.marital_status|default:"--" }}</td>
+
+        </tr>
+
+        <tr>
+            <td colspan="2"><strong>Tipologia caso:</strong></td>
+            <td colspan="4">{{ object.case_type }}</td>
+        </tr>
+
+        <tr>
+            <td colspan="2"><strong>Tipo di matrimonio:</strong></td>
+            <td>{{ object.union_type|default:"--" }}</td>
+            <td colspan="2"><strong>Durata convivenza:</strong></td>
+            <td>{{ object.relation_duration|default:"--" }}</td>
+        </tr>
+        <tr>
+            <td><strong>Numero figli:</strong></td>
+            <td>{{ object.sons_number|default:"--" }}</td>
+            <td colspan="2"><strong>Numero componenti famiglia:</strong></td>
+            <td  colspan="2">{{ object.family_number|default:"--" }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>Indirizzo di residenza:</strong></td>
+            <td colspan="4">{{ object.address }} - {{ object.zip_code }} {{ object.city }} ({{ object.province }})</td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>Fonte d'informazione:</strong></td>
+            <td>{{ object.source|default:"--" }}</td>
+            <td colspan="2"><strong>Numeri telefonici:</strong></td>
+            <td>
+                {{ object.phone|default:"" }}{% if object.mobile %} {% if object.phone %}-{% endif %} {{ object.mobile|default:"" }}{% endif %}</td>
+        </tr>
+        </table>
+        <p class="authorize">In ottemperanza al D.lgs 196/2003 autorizzo il trattamento dei dati
+                personali
+        </p>
+        <table>
+            <tr>
+
+                <td style="border: none !important" colspan="3" class="no-border">Data</td>
+                <td style="border: none !important" colspan="3" class="no-border">Firma</td>
+            </tr>
+        </div>
+
+    </table>
+</div>
